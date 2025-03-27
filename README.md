@@ -27,8 +27,59 @@ Una vez desplegado, se puede acceder a Jupyter Lab y a la base de datos .
 
 ## Pruebas de rendimiento
 
--Las pruebas de rendimiento han sido realizadas en el propio jupyter notebook.
+### Búsqueda por Imágenes Similares
 
-## Conclusiones
+#### Algoritmo HNSW
+- **clip_index_hnsw_l2**: 232 μs ± 4.64 μs per loop
+- **clip_index_hnsw_IP**: 237 μs ± 8.88 μs per loop
+- **clip_index_hnsw_cosine**: 216 μs ± 5.86 μs per loop
 
--Las conclusiones han sido realizadas en el propio jupyter notebook.
+#### Algoritmo FLAT
+- **clip_index_flat_l2**: 861 μs ± 757 μs per loop
+- **clip_index_flat_ip**: 284 μs ± 1.69 μs per loop
+- **clip_index_flat_cosine**: 291 μs ± 12.5 μs per loop
+
+#### **Análisis de Resultados: Imágenes Similares**
+1. **Eficiencia Temporal**
+   En la búsqueda por imágenes similares, **HNSW demuestra tiempos de ejecución menores** (entre 216 μs y 237 μs) en comparación con FLAT (284 μs a 291 μs en índices IP y cosine).
+
+2. **Precisión vs. Rendimiento**
+   - **FLAT**, al realizar una búsqueda exhaustiva por fuerza bruta, garantiza el **mejor resultado** en precisión, siendo ideal cuando la exactitud es fundamental.
+   - **HNSW**, al ser una búsqueda aproximada, ofrece tiempos más rápidos pero puede introducir pequeños errores.
+
+3. **Influencia del Tamaño de la Base de Datos**
+   La base de datos utilizada en este ejemplo es pequeña, por lo que las diferencias de tiempo no son drásticas. Con bases de datos más grandes, **HNSW** sería más eficiente en términos de velocidad, aunque **FLAT** seguiría ofreciendo resultados óptimos en precisión.
+
+---
+
+### Búsqueda por Descripción
+
+#### Algoritmo HNSW
+- **clip_index_hnsw_l2**: 218 μs ± 7.04 μs per loop
+- **clip_index_hnsw_IP**: 225 μs ± 4.11 μs per loop
+- **clip_index_hnsw_cosine**: 213 μs ± 4.4 μs per loop
+
+#### Algoritmo FLAT
+- **clip_index_flat_l2**: 288 μs ± 2.92 μs per loop
+- **clip_index_flat_ip**: 287 μs ± 3.84 μs per loop
+- **clip_index_flat_cosine**: 282 μs ± 3.34 μs per loop
+
+#### **Análisis de Resultados: Búsqueda por Descripción**
+1. **Eficiencia Temporal**
+   En la búsqueda por descripción, **HNSW sigue siendo ligeramente más rápido** (213 μs a 225 μs) en comparación con FLAT (282 μs a 288 μs), aunque la diferencia es menor que en la búsqueda por imágenes.
+
+2. **Precisión vs. Rendimiento**
+   - **FLAT** asegura la máxima precisión al ejecutar una búsqueda exhaustiva, lo que es ventajoso cuando la precisión es crítica.
+   - **HNSW** permite una mayor eficiencia temporal, lo que puede ser preferible en entornos donde la velocidad es esencial y se tolera una ligera aproximación en los resultados.
+
+3. **Influencia del Tamaño de la Base de Datos**
+   Al igual que en la búsqueda por imágenes, la base de datos pequeña utilizada en este experimento minimiza la diferencia en tiempos. Con bases de datos de mayor tamaño, **HNSW** se destacaría en velocidad, aunque **FLAT** seguiría siendo el método que garantiza los mejores resultados en precisión.
+
+
+## **Conclusión**
+
+- **FLAT ofrece siempre el mejor resultado en términos de precisión** debido a su enfoque de búsqueda por fuerza bruta, lo que lo hace ideal para aplicaciones donde la exactitud es primordial.
+- En este ejemplo, la diferencia de tiempos no es tan significativa porque la base de datos es pequeña. Sin embargo, **HNSW se muestra más eficiente en términos de velocidad**, especialmente en la búsqueda por imágenes similares, lo que lo convierte en la opción preferida en entornos con bases de datos extensas.
+- Es importante notar que, aunque **HNSW** ofrece tiempos de ejecución menores en bases de datos grandes, **no garantiza siempre el mejor resultado en precisión**. La elección del algoritmo dependerá de las prioridades de la aplicación:
+  - **Precisión absoluta:** FLAT es el más indicado.
+  - **Velocidad y eficiencia en grandes volúmenes de datos:** HNSW resulta más eficiente, siempre que se acepte una leve aproximación en los resultados.
